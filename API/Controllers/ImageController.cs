@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTO.Image;
+using Application.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,15 +19,10 @@ namespace API.Controllers
         /// <returns>A list of all images, each with fields {Id, FileData, CreatorID, CreatorUsername, Likes, Views}</returns>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<Image>>> getAllImages()
+        public async Task<ActionResult<List<GetAllImagesDTO>>> getAllImagesQuery()
         {
-            //var result = await Mediator.Send(new getAllImagesQuery());
-            var test = new List<string>
-            {
-                "test1",
-                "test2"
-            };
-            return Ok(test);
+            var result = await Mediator.Send(new GetAllImagesQuery());
+            return Ok(result);
         }
 
         /// <summary>
@@ -36,11 +32,10 @@ namespace API.Controllers
         /// <returns>An image with fields {Id, FileData, CreatorID, CreatorUsername, Likes, Views}</returns>
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Image>>> getImageById(string id)
+        public async Task<ActionResult<List<ImageDTO>>> getImageById(string id)
         {
-            //var result = await Mediator.Send(new getImageQuery(id));
-            var test = "test1";
-            return Ok(test);
+            var result = await Mediator.Send(new GetImageQuery(id));
+            return Ok(result);
         }
     }
 }

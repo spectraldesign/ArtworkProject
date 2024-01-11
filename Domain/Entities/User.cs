@@ -7,10 +7,6 @@ namespace Domain.Entities
         public string Username { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
-        public virtual User Creator { get; set; }
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        public virtual ICollection<Comment> Comments { get; set; }
-        public int Views { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
     }
 }

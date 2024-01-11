@@ -2,7 +2,7 @@
 using Database;
 using System.Text.Json.Serialization;
 
-namespace ArtworkProject
+namespace API
 {
     public class Startup(IConfiguration configuration)
     {

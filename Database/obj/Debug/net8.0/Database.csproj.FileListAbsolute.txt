@@ -15,3 +15,4 @@ C:\Users\SHodne\Documents\GitHub\ArtworkProject\Database\obj\Debug\net8.0\Databa
 C:\Users\SHodne\Documents\GitHub\ArtworkProject\Database\bin\Debug\net8.0\Domain.dll
 C:\Users\SHodne\Documents\GitHub\ArtworkProject\Database\bin\Debug\net8.0\Domain.pdb
 C:\Users\SHodne\Documents\GitHub\ArtworkProject\Database\obj\Debug\net8.0\Database.csproj.CopyComplete
+C:\Users\SHodne\Documents\GitHub\ArtworkProject\Database\obj\Debug\net8.0\Database.sourcelink.json

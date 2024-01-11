@@ -7,5 +7,8 @@
 
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual User Creator { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public virtual Image Image { get; set; }
     }
 }

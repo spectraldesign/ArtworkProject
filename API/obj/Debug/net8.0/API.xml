@@ -9,7 +9,7 @@
             API endpoint for Images
             </summary>
         </member>
-        <member name="M:API.Controllers.ImageController.getAllImages">
+        <member name="M:API.Controllers.ImageController.getAllImagesQuery">
             <summary>
             Get all images.
             </summary>

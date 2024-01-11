@@ -122,7 +122,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\SHodne\\Documents\\GitHub\\ArtworkProject\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\SHodne\\Documents\\GitHub\\ArtworkProject\\Domain\\Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
