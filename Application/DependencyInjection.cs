@@ -1,4 +1,5 @@
-﻿using Application.Repositories;
+﻿using Application.Extensions;
+using Application.Repositories;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ namespace Application
             services.AddHttpContextAccessor();
             services.AddTransient<UserManager<User>>();
             services.AddTransient<IImageRepository, ImageRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IGenericExtension, GenericExtensions>();
             return services;
         }
     }

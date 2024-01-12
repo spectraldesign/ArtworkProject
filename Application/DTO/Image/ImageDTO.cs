@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.DTO.Image
+﻿namespace Application.DTO.Image
 {
     /// <summary>
     /// Data transfer object for Images. Contains all necessary info about an image.
@@ -15,7 +13,8 @@ namespace Application.DTO.Image
     {
         public string Id { get; set; }
         public string FileData { get; set; }
-        public User Creator { get; set; }
+        public string CreatorId { get; set; }
+        public string CreatorName { get; set; }
         public int CommentCount { get; set; }
         public int LikeCount { get; set; }
         public int Views { get; set; }

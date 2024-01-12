@@ -1,5 +1,6 @@
-﻿using Application.DTO.Image;
-using Application.Queries;
+﻿using Application.Commands.Image;
+using Application.DTO.Image;
+using Application.Queries.ImageQueries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,7 @@ namespace API.Controllers
     [Route("api/image")]
     public class ImageController : BaseApiController
     {
+
         /// <summary>
         /// Get all images.
         /// </summary>
@@ -36,6 +38,13 @@ namespace API.Controllers
         {
             var result = await Mediator.Send(new GetImageQuery(id));
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> createNewImage([FromBody] CreateImageDTO imageDTO)
+        {
+            var result = await Mediator.Send(new CreateImageCommand(imageDTO));
+            return result == 1 ? StatusCode(201) : new BadRequestObjectResult(result);
         }
     }
 }

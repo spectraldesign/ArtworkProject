@@ -1,4 +1,5 @@
 ﻿using API.Extensions;
+using Application;
 using Database;
 using System.Text.Json.Serialization;
 
@@ -12,7 +13,7 @@ namespace API
         {
             services.AddInfrastructure(Configuration);
 
-            //services.AddApplication(); DependencyInject from Application
+            services.AddApplication();
 
             services.AddHealthChecks();
             services.AddControllers().AddJsonOptions(x =>

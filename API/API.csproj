@@ -5,6 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile></DocumentationFile>
+		<UserSecretsId>102a08b1-e347-45b7-aa2f-9fc057fb8509</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Application\Application.csproj" />
@@ -13,6 +14,7 @@
 	<ItemGroup>
 	  <PackageReference Include="MediatR" Version="12.2.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+	  <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    <PrivateAssets>all</PrivateAssets>

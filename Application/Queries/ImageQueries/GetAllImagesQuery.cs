@@ -2,7 +2,7 @@
 using Application.Repositories;
 using MediatR;
 
-namespace Application.Queries
+namespace Application.Queries.ImageQueries
 {
     public class GetAllImagesQuery : IRequest<List<GetAllImagesDTO>> { }
     public class GetAllImagesQueryHandler : IRequestHandler<GetAllImagesQuery, List<GetAllImagesDTO>>

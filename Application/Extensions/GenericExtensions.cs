@@ -1,11 +1,13 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Extensions
 {
     public interface IGenericExtension
     {
-        //Task<Type> NameOfExtensionFunctionAsync()
+        Task<User> GetCurrentUserAsync();
     }
     public class GenericExtensions : IGenericExtension
     {
@@ -15,6 +17,12 @@ namespace Application.Extensions
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
+        }
+        public async Task<User> GetCurrentUserAsync()
+        {
+            string name = _httpContextAccessor.HttpContext.User.Identity.Name;
+            User user = await _context.Users.Where(x => x.UserName == name).FirstOrDefaultAsync();
+            return user;
         }
     }
 }
