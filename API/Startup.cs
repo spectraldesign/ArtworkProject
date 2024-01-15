@@ -1,6 +1,7 @@
 ﻿using API.Extensions;
 using Application;
 using Database;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 
 namespace API
@@ -16,8 +17,11 @@ namespace API
             services.AddApplication();
 
             services.AddHealthChecks();
-            services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            services.AddControllers(config => config.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            }
+                );
 
             services.AddControllers();
             services.AddCors(options =>

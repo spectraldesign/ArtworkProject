@@ -20,6 +20,7 @@ namespace Application
             services.AddTransient<UserManager<User>>();
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ILikeRepository, LikeRepository>();
             services.AddTransient<IGenericExtension, GenericExtensions>();
             return services;
         }

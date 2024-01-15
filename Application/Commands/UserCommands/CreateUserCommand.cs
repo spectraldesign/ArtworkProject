@@ -7,11 +7,11 @@ namespace Application.Commands.UserCommands
 {
     public class CreateUserCommand : IRequest<IdentityResult>
     {
-        public readonly CreateUserDTO _createUserDTO;
+        public readonly CreateUserDTO _updateUserDTO;
 
         public CreateUserCommand(CreateUserDTO createUserDTO)
         {
-            _createUserDTO = createUserDTO;
+            _updateUserDTO = createUserDTO;
         }
     }
 
@@ -25,7 +25,7 @@ namespace Application.Commands.UserCommands
 
         public async Task<IdentityResult> Handle(CreateUserCommand command, CancellationToken token)
         {
-            return await _userRepository.CreateUserAsync(command._createUserDTO);
+            return await _userRepository.CreateUserAsync(command._updateUserDTO);
         }
     }
 }

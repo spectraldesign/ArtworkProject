@@ -92,5 +92,25 @@ namespace API.Controllers
             }
             return Ok($"User with ID: {id} deleted");
         }
+
+        /// <summary>
+        /// Updates a user with Id based on provided information.
+        /// You must have permission to update the user with ID, normally this will only be your own account.
+        /// </summary>
+        /// <param name="updateUserDTO">Json object with update info, valid fields are any of {UserName, Password}</param>
+        /// <returns></returns>
+        /// <response code="201">User successfully updated</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        [HttpPut("{id}")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<ActionResult<IdentityResult>> UpdateUserById(string id, [FromBody] CreateUserDTO updateUserDTO)
+        {
+            var result = await Mediator.Send(new UpdateUserCommand(new UpdateUserDTO() { Id = id, UserName = updateUserDTO.UserName, Password = updateUserDTO.Password }));
+            return !result.Succeeded ? new BadRequestObjectResult(result) : StatusCode(201);
+        }
     }
 }

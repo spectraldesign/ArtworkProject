@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class Like
     {
@@ -12,5 +6,7 @@ namespace Domain.Entities
 
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual User User { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public virtual Image Image { get; set; }
     }
 }

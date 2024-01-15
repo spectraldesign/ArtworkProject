@@ -18,6 +18,7 @@ namespace Application.Repositories
         Task<bool> ValidateUserAsync(CreateUserDTO validateUserDTO);
         Task<UserDTO> GetLoggedInUserAsync();
         Task<int> DeleteUserAsync(string id);
+        Task<IdentityResult> UpdateUserAsync(UpdateUserDTO updateUserDTO);
     }
     public class UserRepository : IUserRepository
     {
@@ -131,6 +132,31 @@ namespace Application.Repositories
             //Save db changes
             var res = await _dbContext.SaveChangesAsync();
             return res;
+        }
+
+        public async Task<IdentityResult> UpdateUserAsync(UpdateUserDTO updateUserDTO)
+        {
+            User? dbUser = await _dbContext.Users.Where(x => x.Id == updateUserDTO.Id).FirstOrDefaultAsync();
+            if (dbUser == null)
+            {
+                return IdentityResult.Failed(new IdentityError() { Code = "404 - User not found", Description = $"User with id: {updateUserDTO.Id} was not found in database" });
+            }
+            User loggedInUser = await GetCurrentUser();
+            if (loggedInUser.Id != dbUser.Id)
+            {
+                return IdentityResult.Failed(new IdentityError() { Code = "403 - Forbidden", Description = "Can only update your own user." });
+            }
+            if (updateUserDTO.UserName != null)
+            {
+                dbUser.UserName = updateUserDTO.UserName;
+            }
+            if (updateUserDTO.Password != null)
+            {
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(dbUser);
+                IdentityResult passwordChangeResult = await _userManager.ResetPasswordAsync(dbUser, resetToken, updateUserDTO.Password);
+            }
+            IdentityResult result = await _userManager.UpdateAsync(dbUser);
+            return result;
         }
     }
 }
