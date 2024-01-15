@@ -15,7 +15,8 @@ namespace Application.Extensions
                 CreatorName = image.Creator.UserName,
                 CommentCount = image.Comments.Count,
                 LikeCount = image.Likes.Count,
-                Views = image.Views
+                Views = image.Views,
+                Description = image.Description
             };
         }
 

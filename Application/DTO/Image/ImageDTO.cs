@@ -18,5 +18,7 @@
         public int CommentCount { get; set; }
         public int LikeCount { get; set; }
         public int Views { get; set; }
+        public string CreatedAt { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace Application.Repositories
         Task<string> CreateTokenAsync(CreateUserDTO loginDTO);
         Task<IdentityResult> CreateUserAsync(CreateUserDTO createUserDTO);
         Task<bool> ValidateUserAsync(CreateUserDTO validateUserDTO);
+        Task<UserDTO> GetLoggedInUserAsync();
     }
     public class UserRepository : IUserRepository
     {
@@ -41,6 +42,7 @@ namespace Application.Repositories
         public async Task<IdentityResult> CreateUserAsync(CreateUserDTO createUserDTO)
         {
             var user = createUserDTO.ToUser();
+            user.CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
             var result = await _context.Users.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
             if (result != null)
             {
@@ -96,6 +98,12 @@ namespace Application.Repositories
             signingCredentials: signingCredentials
             );
             return tokenOptions;
+        }
+
+        public async Task<UserDTO> GetLoggedInUserAsync()
+        {
+            User currentUser = await GetCurrentUser();
+            return new UserDTO { Id = currentUser.Id, CreatedAt = currentUser.CreatedAt, UserName = currentUser.UserName };
         }
     }
 }

@@ -2,7 +2,7 @@
 using Application.Repositories;
 using MediatR;
 
-namespace Application.Commands.Image
+namespace Application.Commands.ImageCommands
 {
     public class CreateImageCommand : IRequest<int>
     {

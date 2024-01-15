@@ -1,5 +1,6 @@
 ﻿using Application.Commands.UserCommands;
 using Application.DTO.User;
+using Application.Queries.UserQueries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,16 @@ namespace API.Controllers
                 return Ok(token);
             }
             return Unauthorized();
+        }
+        /// <summary>
+        /// Gets the currently logged in user
+        /// </summary>
+        /// <returns>{Id, UserName, CreatedAt}</returns>
+        [HttpPost("currentUser")]
+        public async Task<ActionResult<UserDTO>> GetLoggedInUser()
+        {
+            var result = await Mediator.Send(new GetLoggedInUserQuery());
+            return result == null ? new BadRequestObjectResult(result) : Ok(result);
         }
     }
 }

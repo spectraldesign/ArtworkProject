@@ -6,7 +6,6 @@ namespace Application.DTO.Image
     {
         [Required]
         public string FileData { get; set; }
-        [Required]
-        public string CreatorId { get; set; }
+        public string Description { get; set; }
     }
 }

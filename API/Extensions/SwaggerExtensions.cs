@@ -15,7 +15,7 @@ namespace API.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "FeedApp API",
+                    Title = "ArtworkProject API",
                     Version = "v1"
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

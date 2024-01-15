@@ -12,6 +12,7 @@ namespace Application.Repositories
         Task<ImageDTO> GetImageByIdAsync(string Id);
         Task<List<GetAllImagesDTO>> GetAllImagesAsync();
         Task<int> CreateImageAsync(CreateImageDTO createImageDTO);
+        Task<int> DeleteImageAsync(string Id);
     }
     public class ImageRepository : IImageRepository
     {
@@ -27,7 +28,12 @@ namespace Application.Repositories
 
         public async Task<List<GetAllImagesDTO>> GetAllImagesAsync()
         {
-            var response = await _artworkProjectDbContext.Images.Select(x => new GetAllImagesDTO { Id = x.Id }).ToListAsync();
+            var response = await _artworkProjectDbContext.Images.Select(x => new GetAllImagesDTO
+            {
+                Id = x.Id,
+                CreatorId = x.Creator.Id,
+                Description = x.Description
+            }).ToListAsync();
             return response;
         }
 
@@ -42,6 +48,8 @@ namespace Application.Repositories
                 CommentCount = x.Comments.Count(),
                 LikeCount = x.Likes.Count(),
                 Views = x.Views,
+                CreatedAt = x.CreatedAt,
+                Description = x.Description
             }).FirstAsync();
             return response;
         }
@@ -55,9 +63,29 @@ namespace Application.Repositories
             image.Likes = new List<Like>();
             image.Comments = new List<Comment>();
             image.Views = 0;
+            image.CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+            image.Description = createImageDTO.Description;
             await _artworkProjectDbContext.Images.AddAsync(image);
             var saved = await _artworkProjectDbContext.SaveChangesAsync();
             return saved;
+        }
+
+        public async Task<int> DeleteImageAsync(string Id)
+        {
+            User currentUser = await _genericExtension.GetCurrentUserAsync();
+            Image? dbImage = await _artworkProjectDbContext.Images.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            if (dbImage == null)
+            {
+                return -1;
+            }
+            string? dbImageCreatorId = await _artworkProjectDbContext.Images.Where(x => x.Id == Id).Select(x => x.Creator.Id).FirstOrDefaultAsync();
+            if (dbImageCreatorId != currentUser.Id)
+            {
+                return -2;
+            }
+            _artworkProjectDbContext.Images.Remove(dbImage);
+            int res = await _artworkProjectDbContext.SaveChangesAsync();
+            return res;
         }
     }
 }

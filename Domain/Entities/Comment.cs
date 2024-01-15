@@ -10,5 +10,6 @@
 
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual Image Image { get; set; }
+        public string CreatedAt { get; set; }
     }
 }

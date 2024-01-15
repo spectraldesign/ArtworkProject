@@ -16,5 +16,9 @@
         public ICollection<Like> Likes { get; set; }
 
         public int Views { get; set; }
+
+        public string CreatedAt { get; set; }
+
+        public string Description { get; set; }
     }
 }
