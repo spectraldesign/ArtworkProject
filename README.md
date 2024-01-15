@@ -38,6 +38,7 @@ The recommended way is to do the following:
 - In the Package Manager Console change the Default project dropdown to Database.
 - Input the following commands:
 - `Update-Database`
+- If the above command gives an error, run `AspnetCore\Update-Database` instead.
 
 The alternative way if you are not using VS and the NuGet console is to do the following:
 `dotnet ef database update --project Database --startup-project API`
