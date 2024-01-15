@@ -68,7 +68,7 @@ namespace API.Controllers
             {
                 return Problem(
                     title: "Error, no such image",
-                    detail: $"Poll with ID: {id} was not found",
+                    detail: $"Image with ID: {id} was not found",
                     statusCode: StatusCodes.Status404NotFound
                     );
             }
@@ -80,7 +80,7 @@ namespace API.Controllers
                     statusCode: StatusCodes.Status403Forbidden
                     );
             }
-            return Ok($"Poll with ID: {id} deleted");
+            return Ok($"Image with ID: {id} deleted");
         }
     }
 }

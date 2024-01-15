@@ -66,5 +66,31 @@ namespace API.Controllers
             var result = await Mediator.Send(new GetLoggedInUserQuery());
             return result == null ? new BadRequestObjectResult(result) : Ok(result);
         }
+
+        /// <summary>
+        /// If authorized, deletes the user with the provided ID.
+        /// </summary>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<int>> DeleteUser(string id)
+        {
+            var result = await Mediator.Send(new DeleteUserCommand(id));
+            if (result == -1)
+            {
+                return Problem(
+                    title: "Error, no such user",
+                    detail: $"User with ID: {id} was not found",
+                    statusCode: StatusCodes.Status404NotFound
+                    );
+            }
+            if (result == -2)
+            {
+                return Problem(
+                    title: "Error, permission denied",
+                    detail: $"Logged in user did not have permission to delete user with ID: {id}",
+                    statusCode: StatusCodes.Status403Forbidden
+                    );
+            }
+            return Ok($"User with ID: {id} deleted");
+        }
     }
 }

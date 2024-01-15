@@ -17,10 +17,11 @@ namespace Application.Repositories
         Task<IdentityResult> CreateUserAsync(CreateUserDTO createUserDTO);
         Task<bool> ValidateUserAsync(CreateUserDTO validateUserDTO);
         Task<UserDTO> GetLoggedInUserAsync();
+        Task<int> DeleteUserAsync(string id);
     }
     public class UserRepository : IUserRepository
     {
-        private readonly IArtworkProjectDbContext _context;
+        private readonly IArtworkProjectDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IGenericExtension _genericExtension;
@@ -29,7 +30,7 @@ namespace Application.Repositories
         public UserRepository(IGenericExtension genericExtension, IArtworkProjectDbContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             _configuration = configuration;
-            _context = context;
+            _dbContext = context;
             _genericExtension = genericExtension;
             _userManager = userManager;
         }
@@ -43,7 +44,7 @@ namespace Application.Repositories
         {
             var user = createUserDTO.ToUser();
             user.CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-            var result = await _context.Users.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
+            var result = await _dbContext.Users.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
             if (result != null)
             {
                 return IdentityResult.Failed(new IdentityError() { Code = "403 - Forbidden", Description = "Username already exists" });
@@ -104,6 +105,32 @@ namespace Application.Repositories
         {
             User currentUser = await GetCurrentUser();
             return new UserDTO { Id = currentUser.Id, CreatedAt = currentUser.CreatedAt, UserName = currentUser.UserName };
+        }
+
+        public async Task<int> DeleteUserAsync(string id)
+        {
+            User? dbUser = await _dbContext.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+            if (dbUser == null)
+            {
+                return -1;
+            }
+            //In case we want admin accounts in the future this check can be changed, for now you should only be able to delete own account.
+            User loggedInUser = await GetCurrentUser();
+            if (loggedInUser.Id != dbUser.Id)
+            {
+                return -2;
+            }
+            //Need to delete all the content belonging to User
+            _dbContext.Likes.RemoveRange(_dbContext.Likes.Where(x => x.User.Id == id));
+            _dbContext.Comments.RemoveRange(_dbContext.Comments.Where(x => x.Creator.Id == id));
+            _dbContext.Images.RemoveRange(_dbContext.Images.Where(x => x.Creator.Id == id));
+
+            //Remove user
+            _dbContext.Users.Remove(dbUser);
+
+            //Save db changes
+            var res = await _dbContext.SaveChangesAsync();
+            return res;
         }
     }
 }

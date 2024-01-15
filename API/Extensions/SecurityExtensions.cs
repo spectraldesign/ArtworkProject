@@ -17,6 +17,7 @@ namespace API.Extensions
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
+                o.SignIn.RequireConfirmedAccount = false;
             })
             .AddEntityFrameworkStores<ArtworkProjectDbContext>()
             .AddDefaultTokenProviders();
