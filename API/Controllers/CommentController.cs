@@ -53,7 +53,7 @@ namespace API.Controllers
         /// Create a new Comment (by the logged in user)
         /// </summary>
         /// <param name="commentDTO">{content: string, ImageId: valid string Guid for the image to comment on}</param>
-        /// <returns></returns>
+        /// <returns>{data: "", success, message, responseCode}</returns>
 
         [HttpPost]
         public async Task<ActionResult<ApiResponseType<string>>> CreateComment([FromBody] CreateCommentDTO commentDTO)
@@ -70,6 +70,11 @@ namespace API.Controllers
             return new ApiResponseType<string>("", true, "Comment created successfully.", 201);
         }
 
+        /// <summary>
+        /// Delete a Comment (if you have permission)
+        /// </summary>
+        /// <param name="commentId">The ID of the comment to delete</param>
+        /// <returns>{data: "", success, message, responseCode}</returns>
         [HttpDelete("{commentId}")]
         public async Task<ActionResult<ApiResponseType<string>>> DeleteComment(string commentId)
         {
