@@ -1,4 +1,5 @@
-﻿using Application.Commands.ImageCommands;
+﻿using Application;
+using Application.Commands.ImageCommands;
 using Application.DTO.Image;
 using Application.Queries.ImageQueries;
 using Microsoft.AspNetCore.Authorization;
@@ -18,69 +19,73 @@ namespace API.Controllers
         /// <summary>
         /// Get all images.
         /// </summary>
-        /// <returns>A list of all images, each with fields {Id, Description, CreatorID}</returns>
+        /// <returns>{data: [{data: [{LikeID, UserID, PollID}], success, message, responseCode}</returns>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<GetAllImagesDTO>>> getAllImagesQuery()
+        public async Task<ActionResult<ApiResponseType<List<GetAllImagesDTO>>>> GetAllImagesQuery()
         {
             var result = await Mediator.Send(new GetAllImagesQuery());
-            return Ok(result);
+            if (result.Count == 0)
+            {
+                return new ApiResponseType<List<GetAllImagesDTO>>([], false, "No images found", 404);
+            }
+            return new ApiResponseType<List<GetAllImagesDTO>>(result, true, "Images fetched successfully");
         }
 
         /// <summary>
         /// Get an image by its Id.
         /// </summary>
         /// <param name="id">Unique (string) identifier for an image</param>
-        /// <returns>An image with fields {Id, FileData, CreatorID, CreatorUsername, Likes, Views, Description}</returns>
+        /// <returns>{data: {LikeID, UserID, PollID}?, success, message, responseCode}</returns>
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<ImageDTO>>> getImageById(string id)
+        public async Task<ActionResult<ApiResponseType<ImageDTO>>> GetImageById(string id)
         {
             var result = await Mediator.Send(new GetImageQuery(id));
-            return Ok(result);
+            if (result == null)
+            {
+                return new BadRequestObjectResult(new ApiResponseType<ImageDTO?>(null, false, $"No image with Id: {id} found!", 404));
+            }
+            return new ApiResponseType<ImageDTO>(result, true);
         }
 
         /// <summary>
         /// Creates a new image.
         /// </summary>
         /// <param name="imageDTO">Image data should be provided as {imageDataString, descriptionString}</param>
-        /// <returns>Status code 201 on success</returns>
+        /// <returns>{data: {data: int, success, message, responseCode}</returns>
         [HttpPost]
-        public async Task<ActionResult<int>> createNewImage([FromBody] CreateImageDTO imageDTO)
+        public async Task<ActionResult<ApiResponseType<int>>> CreateNewImage([FromBody] CreateImageDTO imageDTO)
         {
             var result = await Mediator.Send(new CreateImageCommand(imageDTO));
-            return result == 1 ? StatusCode(201) : new BadRequestObjectResult(result);
+            if (result != 1)
+            {
+                return new BadRequestObjectResult(new ApiResponseType<CreateImageDTO?>(null, false, "An error occured creating image", 400));
+            }
+            return new ApiResponseType<int>(result, true, "Image created successfully", 201);
         }
 
         /// <summary>
         /// Deletes an image (if you are the owner)
         /// </summary>
         /// <param name="id">ID of image to delete</param>
-        /// <returns>200 on success</returns>
+        /// <returns>{data: int, success, message, responseCode}</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
-        public async Task<ActionResult<int>> deleteImage(string id)
+        public async Task<ActionResult<ApiResponseType<int>>> DeleteImage(string id)
         {
             var result = await Mediator.Send(new DeleteImageCommand(id));
             if (result == -1)
             {
-                return Problem(
-                    title: "Error, no such image",
-                    detail: $"Image with ID: {id} was not found",
-                    statusCode: StatusCodes.Status404NotFound
-                    );
+                return new BadRequestObjectResult(new ApiResponseType<int>(result, false, $"Image with ID: {id} was not found", 404));
             }
             if (result == -2)
             {
-                return Problem(
-                    title: "Error, permission denied",
-                    detail: $"Logged in user did not have permission to delete image with ID: {id}",
-                    statusCode: StatusCodes.Status403Forbidden
-                    );
+                return new BadRequestObjectResult(new ApiResponseType<int>(result, false, $"Logged in user did not have permission to delete image with ID: {id}", 403));
             }
-            return Ok($"Image with ID: {id} deleted");
+            return new ApiResponseType<int>(result, true, $"Image with ID: {id} deleted", 200);
         }
     }
 }

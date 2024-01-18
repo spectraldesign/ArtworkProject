@@ -50,7 +50,7 @@ namespace Application.Repositories
                 Views = x.Views,
                 CreatedAt = x.CreatedAt,
                 Description = x.Description
-            }).FirstAsync();
+            }).FirstOrDefaultAsync();
             return response;
         }
 
