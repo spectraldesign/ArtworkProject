@@ -12,6 +12,7 @@ namespace Application.Repositories
         Task<List<CommentDTO>> GetCommentsByImageIdAsync(string imageId);
         Task<List<CommentDTO>> GetCommentsByUserIdAsync(string userId);
         Task<int> CreateCommentCommandAsync(CreateCommentDTO commentDTO);
+        Task<int> DeleteCommentCommandAsync(string commentId);
     }
     public class CommentRepository : ICommentRepository
     {
@@ -69,6 +70,18 @@ namespace Application.Repositories
             await _dbContext.Comments.AddAsync(comment);
             var saved = await _dbContext.SaveChangesAsync();
             return saved;
+        }
+
+        public async Task<int> DeleteCommentCommandAsync(string commentId)
+        {
+            Comment? comment = _dbContext.Comments.Where(x => x.Id == commentId).FirstOrDefault();
+            if (comment == null) { return -1; }
+            User currentUser = await _genericExtension.GetCurrentUserAsync();
+            string creatorId = _dbContext.Comments.Where(x => x.Id == commentId).Select(x => x.Creator.Id).First();
+            if (currentUser.Id != creatorId) { return -2; };
+            _dbContext.Comments.Remove(comment);
+            var res = await _dbContext.SaveChangesAsync();
+            return res;
         }
     }
 }

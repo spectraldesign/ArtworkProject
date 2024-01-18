@@ -69,5 +69,21 @@ namespace API.Controllers
             }
             return new ApiResponseType<string>("", true, "Comment created successfully.", 201);
         }
+
+        [HttpDelete("{commentId}")]
+        public async Task<ActionResult<ApiResponseType<string>>> DeleteComment(string commentId)
+        {
+            var result = await Mediator.Send(new DeleteCommentCommand(commentId));
+            if (result == -1)
+            {
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Comment with ID: {commentId} was not found", 404));
+            }
+            if (result == -2)
+            {
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"User does not have permission to delete comment with id: {commentId}!", 400));
+            }
+            return new ApiResponseType<string>("", true, "Comment deleted successfully", 200);
+        }
+
     }
 }
