@@ -33,7 +33,7 @@ namespace API.Controllers
             else
             {
                 IdentityError err = result.Errors.First();
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"{err.Code} | {err.Description}", Int32.Parse(err.Code)));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, err.Description, 403));
             }
         }
 

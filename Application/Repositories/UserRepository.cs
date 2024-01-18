@@ -48,8 +48,9 @@ namespace Application.Repositories
             var result = await _dbContext.Users.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
             if (result != null)
             {
-                return IdentityResult.Failed(new IdentityError() { Code = "403 - Forbidden", Description = "Username already exists" });
+                return IdentityResult.Failed(new IdentityError() { Code = "403", Description = "Username already exists" });
             }
+
             return await _userManager.CreateAsync(user, createUserDTO.Password);
         }
 
@@ -139,12 +140,12 @@ namespace Application.Repositories
             User? dbUser = await _dbContext.Users.Where(x => x.Id == updateUserDTO.Id).FirstOrDefaultAsync();
             if (dbUser == null)
             {
-                return IdentityResult.Failed(new IdentityError() { Code = "404 - User not found", Description = $"User with id: {updateUserDTO.Id} was not found in database" });
+                return IdentityResult.Failed(new IdentityError() { Code = "404", Description = $"User with id: {updateUserDTO.Id} was not found in database" });
             }
             User loggedInUser = await GetCurrentUser();
             if (loggedInUser.Id != dbUser.Id)
             {
-                return IdentityResult.Failed(new IdentityError() { Code = "403 - Forbidden", Description = "Can only update your own user." });
+                return IdentityResult.Failed(new IdentityError() { Code = "403", Description = "Can only update your own user." });
             }
             if (updateUserDTO.UserName != null)
             {
