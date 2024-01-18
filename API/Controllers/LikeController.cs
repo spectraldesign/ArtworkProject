@@ -21,7 +21,7 @@ namespace API.Controllers
         /// <param name="imageId">The ID of the image to get likes for</param>
         /// <returns>{data: [{LikeID, UserID, PollID}], success, message, responseCode}</returns>
         [AllowAnonymous]
-        [HttpGet("/image/{imageId}")]
+        [HttpGet("byimage/{imageId}")]
         public async Task<ActionResult<ApiResponseType<List<LikeDTO>>>> GetLikesByImageId(string imageId)
         {
             var result = await Mediator.Send(new GetLikesByImageIdQuery(imageId));
@@ -38,7 +38,7 @@ namespace API.Controllers
         /// <param name="userId">The ID of the user to get likes for</param>
         /// <returns>{data: [{LikeID, UserID, PollID}], success, message, responseCode}</returns>
         [AllowAnonymous]
-        [HttpGet("/user/{userId}")]
+        [HttpGet("byuser/{userId}")]
         public async Task<ActionResult<ApiResponseType<List<LikeDTO>>>> GetLikesByUserId(string userId)
         {
             var result = await Mediator.Send(new GetLikesByUserIdQuery(userId));
@@ -50,19 +50,23 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Create a new like on an image by its ID.
+        /// Toggles a new like on an image by its ID.
         /// </summary>
-        /// <param name="imageId">The ID of the image to like.</param>
+        /// <param name="imageId">The ID of the image to toggle like on.</param>
         /// <returns>{data: "", success, message, responseCode}</returns>
         [HttpPost("{imageId}")]
-        public async Task<ActionResult<ApiResponseType<string>>> CreateLike(string imageId)
+        public async Task<ActionResult<ApiResponseType<string>>> ToggleLike(string imageId)
         {
-            var result = await Mediator.Send(new CreateLikeCommand(imageId));
+            var result = await Mediator.Send(new ToggleLikeCommand(imageId));
             if (result == -1)
             {
                 return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Image with ID: {imageId} was not found", 404));
             }
-            return new ApiResponseType<string>("", true, "Like created successfully.", 201);
+            if (result == 0)
+            {
+                return new ApiResponseType<string>("", true, "Like created successfully", 201);
+            }
+            return new ApiResponseType<string>("", true, "Like removed successfully.", 200);
         }
     }
 }

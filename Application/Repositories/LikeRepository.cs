@@ -11,7 +11,7 @@ namespace Application.Repositories
     {
         Task<List<LikeDTO>> GetLikesByImageIdAsync(string pollId);
         Task<List<LikeDTO>> GetLikesByUserIdAsync(string userId);
-        Task<int> CreateLikeAsync(string pollId);
+        Task<int> ToggleLikeAsync(string pollId);
 
     }
     public class LikeRepository : ILikeRepository
@@ -48,7 +48,7 @@ namespace Application.Repositories
             return result;
         }
 
-        public async Task<int> CreateLikeAsync(string imageId)
+        public async Task<int> ToggleLikeAsync(string imageId)
         {
             User currentUser = await _genericExtension.GetCurrentUserAsync();
             Image? image = await _dbContext.Images.Where(x => x.Id == imageId).FirstOrDefaultAsync();
@@ -56,15 +56,22 @@ namespace Application.Repositories
             {
                 return -1;
             }
-            Like like = new Like()
+            Like? dbLike = await _dbContext.Likes.Where(x => x.Image.Id == image.Id).FirstOrDefaultAsync();
+            if (dbLike == null)
             {
-                Id = Guid.NewGuid().ToString(),
-                User = currentUser,
-                Image = image,
-            };
-            await _dbContext.Likes.AddAsync(like);
-            var res = await _dbContext.SaveChangesAsync();
-            return res;
+                Like like = new Like()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    User = currentUser,
+                    Image = image,
+                };
+                await _dbContext.Likes.AddAsync(like);
+                await _dbContext.SaveChangesAsync();
+                return 0;
+            }
+            _dbContext.Likes.Remove(dbLike);
+            await _dbContext.SaveChangesAsync();
+            return 1;
         }
     }
 }
