@@ -9,7 +9,7 @@ namespace Application.Repositories
 {
     public interface ILikeRepository
     {
-        Task<List<LikeDTO>> GetLikesByImageIdAsync(string pollId);
+        Task<List<LikeDTO>> GetLikesByImageIdAsync(string imageId);
         Task<List<LikeDTO>> GetLikesByUserIdAsync(string userId);
         Task<int> ToggleLikeAsync(string pollId);
 

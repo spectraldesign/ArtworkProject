@@ -21,6 +21,7 @@ namespace Application
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ILikeRepository, LikeRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
             services.AddTransient<IGenericExtension, GenericExtensions>();
             return services;
         }
