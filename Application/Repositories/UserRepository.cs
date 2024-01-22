@@ -16,6 +16,7 @@ namespace Application.Repositories
         Task<string> CreateTokenAsync(CreateUserDTO loginDTO);
         Task<IdentityResult> CreateUserAsync(CreateUserDTO createUserDTO);
         Task<bool> ValidateUserAsync(CreateUserDTO validateUserDTO);
+        Task<bool> CheckTokenValidity(VerifyTokenDTO verifyTokenDTO);
         Task<UserDTO> GetLoggedInUserAsync();
         Task<int> DeleteUserAsync(string id);
         Task<IdentityResult> UpdateUserAsync(UpdateUserDTO updateUserDTO);
@@ -28,7 +29,12 @@ namespace Application.Repositories
         private readonly IGenericExtension _genericExtension;
         private User _user;
 
-        public UserRepository(IGenericExtension genericExtension, IArtworkProjectDbContext context, UserManager<User> userManager, IConfiguration configuration)
+        public UserRepository(
+            IGenericExtension genericExtension,
+            IArtworkProjectDbContext context,
+            UserManager<User> userManager,
+            IConfiguration configuration
+            )
         {
             _configuration = configuration;
             _dbContext = context;
@@ -66,7 +72,25 @@ namespace Application.Repositories
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims(loginDTO);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            _user.ActiveToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            await _dbContext.SaveChangesAsync();
+
+            return _user.ActiveToken;
+        }
+
+        public async Task<bool> CheckTokenValidity(VerifyTokenDTO verifyDTO)
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(verifyDTO.Username)
+                    ?? throw new Exception($"No user with username: '{verifyDTO.Username}' exists!");
+                return user.ActiveToken!.Equals(verifyDTO.Token);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         private SigningCredentials GetSigningCredentials()
