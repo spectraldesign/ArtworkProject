@@ -1,6 +1,8 @@
 # ArtworkProject API 
 Public REST API for **ArtworkProject** - The go to place for the modern artist.
 
+<img width="833" alt="image" src="https://github.com/spectraldesign/ArtworkProject/assets/59234024/7955143d-7111-41bd-b0d6-39a6f9e155b8">
+
 The corresponding frontend can be found at: https://github.com/Sabbasn/ArtworkProject.
 
 Table of contents:
