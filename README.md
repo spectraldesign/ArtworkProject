@@ -15,7 +15,7 @@ Table of contents:
 - [Setup](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#setup) 
 
 # Technologies
-The backend of ArtworkProject is built with C# .NET 8 using ASP.NET Core and it is using Entity Framework Core as the object relational mapper for the PostgreSQL database. Inter-process communication is handled using MediatR and everything user related is based on AspNetCore.Identity, with the User object inheriting from AspNetCore.Identity's IdentityUser. For ID's the dotnet default Guid is used, and for authentication JwtBearer is used. Through the default webapi template for .NET Swagger was set up, and has since been expanded upon through the API Controllers in the API project, with proper documentation on all API endpoints.
+The backend of ArtworkProject is built with C# .NET 8 using ASP.NET Core and it is using Entity Framework Core as the object relational mapper for the PostgreSQL database. Inter-process communication is handled using MediatR and everything user related is based on AspNetCore.Identity, with the User object inheriting from AspNetCore.Identity's IdentityUser. For IDs the dotnet default Guid is used, and for authentication JwtBearer is used. Through the default webapi template for .NET Swagger was set up, and has since been expanded upon through the API Controllers in the API project, with proper documentation on all API endpoints.
 
 List of technologies:
  - [ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-8.0)
