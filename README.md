@@ -1,9 +1,9 @@
 # ArtworkProject API 
-Public REST API for **ArtworkProject** - The go to place for the modern artist.
+Public REST API for **ArtworkProject** - A social image sharing platform.
 
 <img width="833" alt="image" src="https://github.com/spectraldesign/ArtworkProject/assets/59234024/7955143d-7111-41bd-b0d6-39a6f9e155b8">
 
-The corresponding frontend can be found at: https://github.com/Sabbasn/ArtworkProject.
+The corresponding frontend can be found at: https://github.com/Sabbasn/ArtworkProject (temporarily private while it is an early WIP).
 
 Table of contents:
 - [Technologies](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#technologies)
@@ -15,7 +15,7 @@ Table of contents:
 - [Setup](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#setup) 
 
 # Technologies
-The backend of ArtworkProject is built with C# .NET 8 using ASP.NET Core and it is using Entity Framework Core as the object relational mapper for the PostgreSQL database. Inter-process communication is handled using MediatR and everything user related is based on AspNetCore.Identity, with the User object inheriting from AspNetCore.Identity's IdentityUser. For ID's the dotnet default Guid is used, and for authentication JwtBearer is used. Through the default webapi template for .NET Swagger was set up, and has since been expanded upon through the API Controllers in the API project, with proper documentation on all API endpoints.
+The backend of ArtworkProject is built with C# .NET 8 using ASP.NET Core and it is using Entity Framework Core as the object relational mapper for the PostgreSQL database. Inter-process communication is handled using MediatR and everything user related is based on AspNetCore.Identity, with the User object inheriting from AspNetCore.Identity's IdentityUser. For IDs the dotnet default Guid is used, and for authentication JwtBearer is used. Through the default webapi template for .NET Swagger was set up, and has since been expanded upon through the API Controllers in the API project, with proper documentation on all API endpoints.
 
 List of technologies:
  - [ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-8.0)
@@ -56,6 +56,20 @@ The connection string should be on the form:
 }
 ```
 Where {PORTNUMBER} is the port you set in PostgreSQL (default: 5432), {USERID} is your postgres username (default: postgres) and {PASSWORD} is the password you set for your database.
+
+You also need to configre the Jwt setup in the same file, so the complete file should look something like this:
+```
+{
+  "ConnectionStrings:ConnectionString": "Server=localhost;Database=ArtworkProject;Port={PORTNUMBER};User Id={USERID};Password={PASSWORD};Ssl Mode=Prefer; Trust Server Certificate=true",
+
+  "JwtConfig": {
+    "validIssuer": "https://localhost:7271/",
+    "validAudience": "https://localhost:7271/",
+    "secret": "somelongsecretmessagethatyoushouldkeepsecretbecauseitsusedtogeneratejwt",
+    "expiresIn": 30000
+  }
+}
+```
 
 If you try to run the project now you will get errors about missing dependencies. 
 To fix this go to Tools -> NuGet Package Manager -> Package Manager Settings then click on Package Sources on the left. 
