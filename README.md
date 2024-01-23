@@ -57,6 +57,20 @@ The connection string should be on the form:
 ```
 Where {PORTNUMBER} is the port you set in PostgreSQL (default: 5432), {USERID} is your postgres username (default: postgres) and {PASSWORD} is the password you set for your database.
 
+You also need to configre the Jwt setup in the same file, so the complete file should look something like this:
+```
+{
+  "ConnectionStrings:ConnectionString": "Server=localhost;Database=ArtworkProject;Port={PORTNUMBER};User Id={USERID};Password={PASSWORD};Ssl Mode=Prefer; Trust Server Certificate=true",
+
+  "JwtConfig": {
+    "validIssuer": "https://localhost:7271/",
+    "validAudience": "https://localhost:7271/",
+    "secret": "somelongsecretmessagethatyoushouldkeepsecretbecauseitsusedtogeneratejwt",
+    "expiresIn": 30000
+  }
+}
+```
+
 If you try to run the project now you will get errors about missing dependencies. 
 To fix this go to Tools -> NuGet Package Manager -> Package Manager Settings then click on Package Sources on the left. 
 Press [+] and add `Name: nuget.org` and `Source: https://api.nuget.org/v3/index.json` and click ok. 
