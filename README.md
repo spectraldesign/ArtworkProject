@@ -4,13 +4,13 @@ Public REST API for **ArtworkProject** - The go to place for the modern artist.
 The corresponding frontend can be found at: https://github.com/Sabbasn/ArtworkProject.
 
 Table of contents:
-- [Technologies](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#technologies)
-- [Structure](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#structure)
-  - [API Project](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#api)
-  - [Application Project](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#application)
-  - [Database Project](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#database)
-  - [Domain Project](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#domain)
-- [Setup](https://github.com/spectraldesign/ArtworkProject/edit/main/README.md#setup) 
+- [Technologies](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#technologies)
+- [Structure](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#structure)
+  - [API Project](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#api)
+  - [Application Project](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#application)
+  - [Database Project](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#database)
+  - [Domain Project](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#domain)
+- [Setup](https://github.com/spectraldesign/ArtworkProject?tab=readme-ov-file#setup) 
 
 # Technologies
 The backend of ArtworkProject is built with C# .NET 8 using ASP.NET Core and it is using Entity Framework Core as the object relational mapper for the PostgreSQL database. Inter-process communication is handled using MediatR and everything user related is based on AspNetCore.Identity, with the User object inheriting from AspNetCore.Identity's IdentityUser. For ID's the dotnet default Guid is used, and for authentication JwtBearer is used. Through the default webapi template for .NET Swagger was set up, and has since been expanded upon through the API Controllers in the API project, with proper documentation on all API endpoints.
