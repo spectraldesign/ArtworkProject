@@ -10,7 +10,7 @@ namespace Application.Repositories
     public interface IImageRepository
     {
         Task<ImageDTO> GetImageByIdAsync(string Id);
-        Task<List<GetAllImagesDTO>> GetAllImagesAsync();
+        Task<GetImageByPageDTO> GetImagesByPageAsync(int page, int pageSize);
         Task<int> CreateImageAsync(CreateImageDTO createImageDTO);
         Task<int> DeleteImageAsync(string Id);
     }
@@ -26,15 +26,28 @@ namespace Application.Repositories
             _configuration = configuration;
         }
 
-        public async Task<List<GetAllImagesDTO>> GetAllImagesAsync()
+        public async Task<GetImageByPageDTO> GetImagesByPageAsync(int page, int pageSize)
         {
-            var response = await _artworkProjectDbContext.Images.Select(x => new GetAllImagesDTO
+            List<Image> response = await _artworkProjectDbContext.Images.OrderByDescending(x => x.CreatedAt)
+                .Include(x => x.Creator)
+                .Include(x => x.Comments)
+                .Include(x => x.Likes)
+                .ToListAsync();
+            List<ImageDTO> result = response.Skip(page * pageSize).Take(pageSize).ToList().Select(x => new ImageDTO()
             {
                 Id = x.Id,
+                CreatedAt = x.CreatedAt,
+                CreatorName = x.Creator.UserName,
                 CreatorId = x.Creator.Id,
-                Description = x.Description
-            }).ToListAsync();
-            return response;
+                CommentCount = x.Comments.Count,
+                Description = x.Description,
+                FileData = x.FileData,
+                LikeCount = x.Likes.Count,
+                Views = x.Views
+            }).ToList();
+            int pageCount = response.Count() / pageSize;
+
+            return new GetImageByPageDTO() { ImageDTOs = result, PageCount = pageCount, CurrentPage = page };
         }
 
         public async Task<ImageDTO> GetImageByIdAsync(string Id)
