@@ -47,7 +47,7 @@ namespace Application.Repositories
             }).ToList();
             int pageCount = response.Count() / pageSize;
 
-            return new GetImageByPageDTO() { ImageDTOs = result, PageCount = pageCount, CurrentPage = page };
+            return new GetImageByPageDTO() { ImageDTOs = result, PageCount = pageCount, CurrentPage = page + 1 };
         }
 
         public async Task<ImageDTO> GetImageByIdAsync(string Id)

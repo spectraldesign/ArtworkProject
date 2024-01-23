@@ -17,23 +17,23 @@ namespace API.Controllers
     {
 
         /// <summary>
-        /// Get images by page. Min page size: 1, Max page size: 100.
+        /// Get images by page. Page must be 1 or more, less than max pages. Min page size: 1, Max page size: 100.
         /// </summary>
         /// <returns>{data: [{data: {ImageData: [{ImageDTO}], CurrentPage: int, PageCount: int}, success, message, responseCode}</returns>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<ApiResponseType<GetImageByPageDTO>>> GetImagesByPage([FromQuery] int page = 0, [FromQuery] int size = 30)
+        public async Task<ActionResult<ApiResponseType<GetImageByPageDTO>>> GetImagesByPage([FromQuery] int page = 1, [FromQuery] int size = 30)
         {
             if (size <= 0 || size > 100)
             {
                 return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO?>(null, false, "Page size must be more than 0 and less than 101", 400));
             }
-            if (page < 0)
+            if (page <= 0)
             {
                 return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO?>(null, false, "Page number must be 0 or higher", 400));
             }
 
-            GetImageByPageDTO result = await Mediator.Send(new GetImagesByPageQuery(page, size));
+            GetImageByPageDTO result = await Mediator.Send(new GetImagesByPageQuery(page - 1, size));
             if (result.ImageDTOs.Count == 0)
             {
                 return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO>(result, false, "No images found", 404));
