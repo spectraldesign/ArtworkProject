@@ -54,6 +54,24 @@ namespace API.Controllers
             }
             return new BadRequestObjectResult(new ApiResponseType<string>("", false, "Failed to authorize user.", 401)); ;
         }
+
+        /// <summary>
+        /// Verify a user's token.
+        /// </summary>
+        /// <param name="verifyTokenDTO">The user id and token to validate.</param>
+        /// <returns>{data: bool, success, message, responseCode}</returns>
+        [AllowAnonymous]
+        [HttpPost("verify")]
+        public async Task<ActionResult<ApiResponseType<bool>>> VerifyToken([FromBody] VerifyTokenDTO verifyTokenDTO)
+        {
+            bool isValid = await Mediator.Send(new ValidateTokenCommand(verifyTokenDTO));
+            if (isValid)
+            {
+                return new ApiResponseType<bool>(isValid, true, "Valid token.", 200);
+            }
+            return new BadRequestObjectResult(new ApiResponseType<bool>(false, false, "Invalid token.", 401));
+        }
+
         /// <summary>
         /// Gets the currently logged in user
         /// </summary>
