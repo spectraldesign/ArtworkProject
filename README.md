@@ -1,7 +1,7 @@
 # ArtworkProject API 
 Public REST API for **ArtworkProject** - A social image sharing platform.
 
-<img width="833" alt="image" src="https://github.com/spectraldesign/ArtworkProject/assets/59234024/7955143d-7111-41bd-b0d6-39a6f9e155b8">
+[<img width="833" alt="image" src="https://github.com/spectraldesign/ArtworkProject/assets/59234024/7955143d-7111-41bd-b0d6-39a6f9e155b8">](https://github.com/spectraldesign/ArtworkProject)
 
 The corresponding frontend can be found at: https://github.com/Sabbasn/ArtworkProject (temporarily private while it is an early WIP).
 
