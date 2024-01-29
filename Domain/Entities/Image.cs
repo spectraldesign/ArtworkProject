@@ -3,7 +3,7 @@
     public class Image
     {
         public string Id { get; set; }
-
+        public string Title { get; set; }
         public string FileData { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]

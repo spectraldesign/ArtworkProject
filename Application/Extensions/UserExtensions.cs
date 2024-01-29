@@ -11,6 +11,7 @@ namespace Application.Extensions
             {
                 Id = user.Id,
                 UserName = user.UserName,
+                ProfilePicture = user.ProfilePicture,
             };
         }
 
@@ -19,6 +20,7 @@ namespace Application.Extensions
             return new User()
             {
                 UserName = userDTO.UserName,
+                ProfilePicture = ""
             };
         }
     }

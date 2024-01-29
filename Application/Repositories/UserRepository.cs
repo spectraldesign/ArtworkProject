@@ -130,7 +130,7 @@ namespace Application.Repositories
         public async Task<UserDTO> GetLoggedInUserAsync()
         {
             User currentUser = await GetCurrentUser();
-            return new UserDTO { Id = currentUser.Id, CreatedAt = currentUser.CreatedAt, UserName = currentUser.UserName };
+            return new UserDTO { Id = currentUser.Id, CreatedAt = currentUser.CreatedAt, UserName = currentUser.UserName, ProfilePicture = currentUser.ProfilePicture };
         }
 
         public async Task<int> DeleteUserAsync(string id)
@@ -179,6 +179,10 @@ namespace Application.Repositories
             {
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(dbUser);
                 IdentityResult passwordChangeResult = await _userManager.ResetPasswordAsync(dbUser, resetToken, updateUserDTO.Password);
+            }
+            if (updateUserDTO.ProfilePicture != null)
+            {
+                dbUser.ProfilePicture = updateUserDTO.ProfilePicture;
             }
             IdentityResult result = await _userManager.UpdateAsync(dbUser);
             return result;

@@ -12,9 +12,11 @@
     public class ImageDTO
     {
         public string Id { get; set; }
+        public string Title { get; set; }
         public string FileData { get; set; }
         public string CreatorId { get; set; }
         public string CreatorName { get; set; }
+        public string CreatorImage { get; set; }
         public int CommentCount { get; set; }
         public int LikeCount { get; set; }
         public int Views { get; set; }

@@ -36,9 +36,11 @@ namespace Application.Repositories
             List<ImageDTO> result = response.Skip(page * pageSize).Take(pageSize).ToList().Select(x => new ImageDTO()
             {
                 Id = x.Id,
+                Title = x.Title,
                 CreatedAt = x.CreatedAt,
                 CreatorName = x.Creator.UserName,
                 CreatorId = x.Creator.Id,
+                CreatorImage = x.Creator.ProfilePicture,
                 CommentCount = x.Comments.Count,
                 Description = x.Description,
                 FileData = x.FileData,
@@ -55,9 +57,11 @@ namespace Application.Repositories
             var response = await _artworkProjectDbContext.Images.Where(x => x.Id == Id).Select(x => new ImageDTO
             {
                 Id = x.Id,
+                Title = x.Title,
                 FileData = x.FileData,
                 CreatorId = x.Creator.Id,
                 CreatorName = x.Creator.UserName,
+                CreatorImage = x.Creator.ProfilePicture,
                 CommentCount = x.Comments.Count(),
                 LikeCount = x.Likes.Count(),
                 Views = x.Views,
@@ -72,6 +76,7 @@ namespace Application.Repositories
             User user = await _genericExtension.GetCurrentUserAsync();
             Image image = createImageDTO.ToImage();
             image.Id = Guid.NewGuid().ToString();
+            image.Title = createImageDTO.Title;
             image.Creator = user;
             image.Likes = new List<Like>();
             image.Comments = new List<Comment>();
