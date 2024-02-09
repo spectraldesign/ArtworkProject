@@ -33,7 +33,7 @@ namespace API.Controllers
             else
             {
                 IdentityError err = result.Errors.First();
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, err.Description, 403));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, err.Description));
             }
         }
 
@@ -50,9 +50,9 @@ namespace API.Controllers
             if (validated)
             {
                 string token = await Mediator.Send(new CreateTokenCommand(loginUserDTO));
-                return new ApiResponseType<string>(token, true, "Login success", 200);
+                return new ApiResponseType<string>(token, true, "Login success");
             }
-            return new BadRequestObjectResult(new ApiResponseType<string>("", false, "Failed to authorize user.", 401)); ;
+            return new BadRequestObjectResult(new ApiResponseType<string>("", false, "Failed to authorize user.")); ;
         }
 
         /// <summary>
@@ -67,9 +67,32 @@ namespace API.Controllers
             bool isValid = await Mediator.Send(new ValidateTokenCommand(verifyTokenDTO));
             if (isValid)
             {
-                return new ApiResponseType<bool>(isValid, true, "Valid token.", 200);
+                return new ApiResponseType<bool>(isValid, true, "Valid token.");
             }
-            return new BadRequestObjectResult(new ApiResponseType<bool>(false, false, "Invalid token.", 401));
+            return new BadRequestObjectResult(new ApiResponseType<bool>(false, false, "Invalid token."));
+        }
+
+        /// <summary>
+        /// Get a user by their username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>An ApiResponseType with the given user, otherwise a 404 Not Found</returns>
+        [AllowAnonymous]
+        [HttpGet("{username}")]
+        public async Task<ActionResult<ApiResponseType<UserDTO>>> GetUserByUsername([FromRoute] string username)
+        {
+            ApiResponseType<UserDTO> response = new();
+            try
+            {
+                UserDTO user = await Mediator.Send(new GetUserByUsernameQuery(username));
+                response.Data = user;
+                return new OkObjectResult(response);
+            } catch (ArgumentException ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+                return new NotFoundObjectResult(response);
+            }
         }
 
         /// <summary>
@@ -82,11 +105,11 @@ namespace API.Controllers
             UserDTO result = await Mediator.Send(new GetLoggedInUserQuery());
             if (result == null)
             {
-                return new BadRequestObjectResult(new ApiResponseType<UserDTO>(new UserDTO(), false, "An error occurred getting current user.", 404));
+                return new BadRequestObjectResult(new ApiResponseType<UserDTO>(new UserDTO(), false, "An error occurred getting current user."));
             }
             else
             {
-                return new ApiResponseType<UserDTO>(result, true, "", 404);
+                return new ApiResponseType<UserDTO>(result, true, "");
             }
         }
 
@@ -101,13 +124,13 @@ namespace API.Controllers
             var result = await Mediator.Send(new DeleteUserCommand(userID));
             if (result == -1)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"User with ID: {userID} was not found", 404));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"User with ID: {userID} was not found"));
             }
             if (result == -2)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Logged in user did not have permission to delete user with ID: {userID}", 403));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Logged in user did not have permission to delete user with ID: {userID}"));
             }
-            return new ApiResponseType<string>("", true, $"User with ID: {userID} deleted", 200);
+            return new ApiResponseType<string>("", true, $"User with ID: {userID} deleted");
         }
 
         /// <summary>
@@ -124,9 +147,9 @@ namespace API.Controllers
             if (!result.Succeeded)
             {
                 IdentityError err = result.Errors.First();
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"{err.Code} | {err.Description}", Int32.Parse(err.Code)));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"{err.Code} | {err.Description}"));
             }
-            return new ApiResponseType<string>("", true, $"User with ID: {userID} updated successfully", 200);
+            return new ApiResponseType<string>("", true, $"User with ID: {userID} updated successfully");
         }
     }
 }

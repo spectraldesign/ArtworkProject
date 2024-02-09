@@ -20,6 +20,7 @@ namespace Application.Repositories
         Task<UserDTO> GetLoggedInUserAsync();
         Task<int> DeleteUserAsync(string id);
         Task<IdentityResult> UpdateUserAsync(UpdateUserDTO updateUserDTO);
+        Task<UserDTO> GetUserByUsername(string username);
     }
     public class UserRepository : IUserRepository
     {
@@ -186,6 +187,22 @@ namespace Application.Repositories
             }
             IdentityResult result = await _userManager.UpdateAsync(dbUser);
             return result;
+        }
+
+        public async Task<UserDTO> GetUserByUsername(string username)
+        {
+            User dbUser = await _dbContext.Users
+                .Include(u => u.Images)
+                .FirstOrDefaultAsync(u => u.UserName == username)
+                ?? throw new ArgumentException($"No user with name: {username}");
+            UserDTO userDTO = new()
+            {
+                CreatedAt = dbUser.CreatedAt,
+                Id = dbUser.Id,
+                ProfilePicture = dbUser.ProfilePicture,
+                UserName = dbUser.UserName!,
+            };
+            return userDTO;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace API.Controllers
             var result = await Mediator.Send(new GetCommentsByImageIdQuery(imageId));
             if (result.Count == 0)
             {
-                return new BadRequestObjectResult(new ApiResponseType<List<CommentDTO>>([], false, $"No comments found on image with id {imageId}", 404));
+                return new BadRequestObjectResult(new ApiResponseType<List<CommentDTO>>([], false, $"No comments found on image with id {imageId}"));
             }
             return new ApiResponseType<List<CommentDTO>>(result, true);
         }
@@ -45,7 +45,7 @@ namespace API.Controllers
             var result = await Mediator.Send(new GetCommentsByUserIdQuery(userId));
             if (result.Count == 0)
             {
-                return new BadRequestObjectResult(new ApiResponseType<List<CommentDTO>>([], false, $"No comments found by user with id {userId}", 404));
+                return new BadRequestObjectResult(new ApiResponseType<List<CommentDTO>>([], false, $"No comments found by user with id {userId}"));
             }
             return new ApiResponseType<List<CommentDTO>>(result, true);
         }
@@ -61,13 +61,13 @@ namespace API.Controllers
             var result = await Mediator.Send(new CreateCommentCommand(commentDTO));
             if (result == -1)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Image with ID: {commentDTO.ImageId} was not found", 404));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Image with ID: {commentDTO.ImageId} was not found"));
             }
             if (result == -2)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Comment cannot be empty!", 400));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Comment cannot be empty!"));
             }
-            return new ApiResponseType<string>("", true, "Comment created successfully.", 201);
+            return new ApiResponseType<string>("", true, "Comment created successfully.");
         }
 
         /// <summary>
@@ -81,13 +81,14 @@ namespace API.Controllers
             var result = await Mediator.Send(new DeleteCommentCommand(commentId));
             if (result == -1)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Comment with ID: {commentId} was not found", 404));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Comment with ID: {commentId} was not found"));
             }
             if (result == -2)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"User does not have permission to delete comment with id: {commentId}!", 400));
+                return new BadRequestObjectResult(
+                    new ApiResponseType<string>("", false, $"User does not have permission to delete comment with id: {commentId}!"));
             }
-            return new ApiResponseType<string>("", true, "Comment deleted successfully", 200);
+            return new ApiResponseType<string>("", true, "Comment deleted successfully");
         }
 
     }

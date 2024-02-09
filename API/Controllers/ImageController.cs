@@ -26,17 +26,17 @@ namespace API.Controllers
         {
             if (size <= 0 || size > 100)
             {
-                return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO?>(null, false, "Page size must be more than 0 and less than 101", 400));
+                return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO?>(null, false, "Page size must be more than 0 and less than 101"));
             }
             if (page <= 0)
             {
-                return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO?>(null, false, "Page number must be 0 or higher", 400));
+                return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO?>(null, false, "Page number must be 0 or higher"));
             }
 
             GetImageByPageDTO result = await Mediator.Send(new GetImagesByPageQuery(page - 1, size));
             if (result.ImageDTOs.Count == 0)
             {
-                return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO>(result, false, "No images found", 404));
+                return new BadRequestObjectResult(new ApiResponseType<GetImageByPageDTO>(result, false, "No images found"));
             }
             return new ApiResponseType<GetImageByPageDTO>(result, true, "Images fetched successfully");
         }
@@ -53,7 +53,7 @@ namespace API.Controllers
             var result = await Mediator.Send(new GetImageQuery(id));
             if (result == null)
             {
-                return new BadRequestObjectResult(new ApiResponseType<ImageDTO?>(null, false, $"No image with Id: {id} found!", 404));
+                return new BadRequestObjectResult(new ApiResponseType<ImageDTO?>(null, false, $"No image with Id: {id} found!"));
             }
             return new ApiResponseType<ImageDTO>(result, true);
         }
@@ -69,9 +69,9 @@ namespace API.Controllers
             var result = await Mediator.Send(new CreateImageCommand(imageDTO));
             if (result != 1)
             {
-                return new BadRequestObjectResult(new ApiResponseType<CreateImageDTO?>(null, false, "An error occured creating image", 400));
+                return new BadRequestObjectResult(new ApiResponseType<CreateImageDTO?>(null, false, "An error occured creating image"));
             }
-            return new ApiResponseType<int>(result, true, "Image created successfully", 201);
+            return new ApiResponseType<int>(result, true, "Image created successfully");
         }
 
         /// <summary>
@@ -88,13 +88,13 @@ namespace API.Controllers
             var result = await Mediator.Send(new DeleteImageCommand(id));
             if (result == -1)
             {
-                return new BadRequestObjectResult(new ApiResponseType<int>(result, false, $"Image with ID: {id} was not found", 404));
+                return new BadRequestObjectResult(new ApiResponseType<int>(result, false, $"Image with ID: {id} was not found"));
             }
             if (result == -2)
             {
-                return new BadRequestObjectResult(new ApiResponseType<int>(result, false, $"Logged in user did not have permission to delete image with ID: {id}", 403));
+                return new BadRequestObjectResult(new ApiResponseType<int>(result, false, $"Logged in user did not have permission to delete image with ID: {id}"));
             }
-            return new ApiResponseType<int>(result, true, $"Image with ID: {id} deleted", 200);
+            return new ApiResponseType<int>(result, true, $"Image with ID: {id} deleted");
         }
     }
 }

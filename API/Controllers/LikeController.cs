@@ -27,7 +27,7 @@ namespace API.Controllers
             var result = await Mediator.Send(new GetLikesByImageIdQuery(imageId));
             if (result.Count == 0)
             {
-                return new BadRequestObjectResult(new ApiResponseType<List<LikeDTO>>([], false, $"No likes found on image with id {imageId}", 404));
+                return new BadRequestObjectResult(new ApiResponseType<List<LikeDTO>>([], false, $"No likes found on image with id {imageId}"));
             }
             return new ApiResponseType<List<LikeDTO>>(result, true);
         }
@@ -44,7 +44,7 @@ namespace API.Controllers
             var result = await Mediator.Send(new GetLikesByUserIdQuery(userId));
             if (result.Count == 0)
             {
-                return new BadRequestObjectResult(new ApiResponseType<List<LikeDTO>>([], false, $"No likes found by user with id {userId}", 404));
+                return new BadRequestObjectResult(new ApiResponseType<List<LikeDTO>>([], false, $"No likes found by user with id {userId}"));
             }
             return new ApiResponseType<List<LikeDTO>>(result, true);
         }
@@ -60,13 +60,13 @@ namespace API.Controllers
             var result = await Mediator.Send(new ToggleLikeCommand(imageId));
             if (result == -1)
             {
-                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Image with ID: {imageId} was not found", 404));
+                return new BadRequestObjectResult(new ApiResponseType<string>("", false, $"Image with ID: {imageId} was not found"));
             }
             if (result == 0)
             {
-                return new ApiResponseType<string>("", true, "Like created successfully", 201);
+                return new ApiResponseType<string>("", true, "Like created successfully");
             }
-            return new ApiResponseType<string>("", true, "Like removed successfully.", 200);
+            return new ApiResponseType<string>("", true, "Like removed successfully.");
         }
     }
 }
