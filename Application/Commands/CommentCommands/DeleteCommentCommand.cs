@@ -1,9 +1,10 @@
-﻿using Application.Repositories;
+﻿using Application.DTO.Comment;
+using Application.Repositories;
 using MediatR;
 
 namespace Application.Commands.CommentCommands
 {
-    public class DeleteCommentCommand : IRequest<int>
+    public class DeleteCommentCommand : IRequest<CommentDTO>
     {
         public string CommentId { get; set; }
 
@@ -13,7 +14,7 @@ namespace Application.Commands.CommentCommands
         }
     }
 
-    public class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand, int>
+    public class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand, CommentDTO>
     {
         private readonly ICommentRepository _commentRepository;
 
@@ -22,7 +23,7 @@ namespace Application.Commands.CommentCommands
             _commentRepository = commentRepository;
         }
 
-        public async Task<int> Handle(DeleteCommentCommand command, CancellationToken token)
+        public async Task<CommentDTO> Handle(DeleteCommentCommand command, CancellationToken token)
         {
             return await _commentRepository.DeleteCommentCommandAsync(command.CommentId);
         }

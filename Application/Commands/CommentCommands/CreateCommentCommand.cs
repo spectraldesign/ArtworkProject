@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Commands.CommentCommands
 {
-    public class CreateCommentCommand : IRequest<int>
+    public class CreateCommentCommand : IRequest<CommentDTO>
     {
         public CreateCommentDTO CreateCommentDTO { get; set; }
 
@@ -14,7 +14,7 @@ namespace Application.Commands.CommentCommands
         }
     }
 
-    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, int>
+    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, CommentDTO>
     {
         private readonly ICommentRepository _commentRepository;
 
@@ -23,7 +23,7 @@ namespace Application.Commands.CommentCommands
             _commentRepository = commentRepository;
         }
 
-        public async Task<int> Handle(CreateCommentCommand command, CancellationToken token)
+        public async Task<CommentDTO> Handle(CreateCommentCommand command, CancellationToken token)
         {
             return await _commentRepository.CreateCommentCommandAsync(command.CreateCommentDTO);
         }

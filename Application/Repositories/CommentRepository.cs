@@ -1,9 +1,11 @@
 ﻿using Application.DTO.Comment;
+using Application.Exceptions;
 using Application.Extensions;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Application.Repositories
 {
@@ -11,8 +13,8 @@ namespace Application.Repositories
     {
         Task<List<CommentDTO>> GetCommentsByImageIdAsync(string imageId);
         Task<List<CommentDTO>> GetCommentsByUserIdAsync(string userId);
-        Task<int> CreateCommentCommandAsync(CreateCommentDTO commentDTO);
-        Task<int> DeleteCommentCommandAsync(string commentId);
+        Task<CommentDTO> CreateCommentCommandAsync(CreateCommentDTO commentDTO);
+        Task<CommentDTO> DeleteCommentCommandAsync(string commentId);
     }
     public class CommentRepository : ICommentRepository
     {
@@ -53,15 +55,17 @@ namespace Application.Repositories
             return result;
         }
 
-        public async Task<int> CreateCommentCommandAsync(CreateCommentDTO commentDTO)
+        public async Task<CommentDTO> CreateCommentCommandAsync(CreateCommentDTO commentDTO)
         {
             if (commentDTO.Content.Length == 0)
             {
-                return -2;
+                throw new NoContentException("Comments must have content defined.");
             }
             User user = await _genericExtension.GetCurrentUserAsync();
-            Image? image = await _dbContext.Images.Where(x => x.Id == commentDTO.ImageId).FirstOrDefaultAsync();
-            if (image == null) { return -1; };
+            Image? image = await _dbContext.Images
+                .Where(x => x.Id == commentDTO.ImageId)
+                .FirstOrDefaultAsync() 
+                ?? throw new ArgumentException($"No image with id: '{commentDTO.ImageId}'");
             Comment comment = commentDTO.ToComment();
             comment.Id = Guid.NewGuid().ToString();
             comment.Creator = user;
@@ -69,19 +73,27 @@ namespace Application.Repositories
             comment.CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
             await _dbContext.Comments.AddAsync(comment);
             var saved = await _dbContext.SaveChangesAsync();
-            return saved;
+            return comment.ToCommentDTO();
         }
 
-        public async Task<int> DeleteCommentCommandAsync(string commentId)
+        public async Task<CommentDTO> DeleteCommentCommandAsync(string commentId)
         {
-            Comment? comment = _dbContext.Comments.Where(x => x.Id == commentId).FirstOrDefault();
-            if (comment == null) { return -1; }
+            Comment comment = _dbContext.Comments
+                .Where(x => x.Id == commentId)
+                .FirstOrDefault()
+                ?? throw new ArgumentException($"No image with id: '{commentId}'");
             User currentUser = await _genericExtension.GetCurrentUserAsync();
-            string creatorId = _dbContext.Comments.Where(x => x.Id == commentId).Select(x => x.Creator.Id).First();
-            if (currentUser.Id != creatorId) { return -2; };
+            string creatorId = _dbContext.Comments
+                .Where(x => x.Id == commentId)
+                .Select(x => x.Creator.Id)
+                .First();
+            if (currentUser.Id != creatorId) 
+            {
+                throw new NotOwnerException($"User does not have permission to delete comment with id: { commentId }!");
+            };
             _dbContext.Comments.Remove(comment);
-            var res = await _dbContext.SaveChangesAsync();
-            return res;
+            await _dbContext.SaveChangesAsync();
+            return comment.ToCommentDTO();
         }
     }
 }
